@@ -1,4 +1,6 @@
 ﻿using DokanNet;
+using Ipfs.Api;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Security.AccessControl;
+using Newtonsoft.Json.Linq;
 
 namespace IpfsMount
 {
@@ -30,8 +33,54 @@ namespace IpfsMount
         public NtStatus CreateFile(string fileName, DokanNet.FileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, DokanFileInfo info)
         {
             Console.WriteLine("CreateFile NYI, {0}, mode {1}", fileName, mode);
+
+            // Read only access.
             if (mode != FileMode.Open)
                 return DokanResult.AccessDenied;
+
+            // Root and root folders are always present.
+            if (fileName == rootName || rootFolders.Any(name => fileName == (rootName + name)))
+            {
+                info.IsDirectory = true;
+                return DokanResult.Success;
+            }
+
+            // Get file info from IPFS
+            var ipfsFileName = fileName.Replace(@"\", "/");
+            try
+            {
+                var ipfs = new IpfsClient();
+                var x = ipfs.DoCommand("file/ls", ipfsFileName);
+                var r = JObject.Parse(x);
+                var hash = (string) r["Arguments"][ipfsFileName];
+                var o = (JObject) r["Objects"][hash];
+                var file = new IpfsFile()
+                {
+                    Hash = (string)o["Hash"],
+                    Size = (long)o["Size"],
+                    IsDirectory = (string)o["Type"] == "Directory",
+                    Links = new List<IpfsFileLink>(0)
+                };
+                var links = o["Links"] as JArray;
+                if (links != null)
+                {
+                    file.Links = links
+                        .Select(l => new IpfsFileLink()
+                        {
+                            Name = (string)l["Name"],
+                            Hash = (string)l["Hash"],
+                            Size = (long)l["Size"],
+                            IsDirectory = (string)l["Type"] == "Directory",
+                        })
+                        .ToList();
+                }
+                info.Context = file;
+                info.IsDirectory = file.IsDirectory;
+            }
+            catch
+            {
+                return DokanResult.FileNotFound;
+            }
 
             return DokanResult.Success;
         }
@@ -51,6 +100,22 @@ namespace IpfsMount
         public NtStatus FindFiles(string fileName, out IList<FileInformation> files, DokanFileInfo info)
         {
             Console.WriteLine("FindFiles, {0}", fileName);
+
+            var file = info.Context as IpfsFile;
+            if (file != null)
+            {
+                files = file.Links
+                    .Select(link => new FileInformation()
+                    {
+                        FileName = link.Name,
+                        Length = link.Size,
+                        Attributes = link.IsDirectory 
+                            ? FileAttributes.Directory 
+                            : FileAttributes.Normal
+                    })
+                    .ToList();
+                return DokanResult.Success;
+            }
 
             // The root consists only of the root folders.
             if (fileName == rootName)
@@ -111,6 +176,15 @@ namespace IpfsMount
             Console.WriteLine("GetFileInformation {0}", fileName);
 
             fileInfo = new FileInformation { FileName = fileName };
+            var file = info.Context as IpfsFile;
+            if (file != null)
+            {
+                if (file.IsDirectory)
+                    fileInfo.Attributes = FileAttributes.Directory;
+                fileInfo.Length = file.Size;
+
+                return DokanResult.Success;
+            }
 
             // Root info
             if (fileName == rootName)
