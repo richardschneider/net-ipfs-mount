@@ -51,6 +51,8 @@ namespace IpfsMount
         public NtStatus FindFiles(string fileName, out IList<FileInformation> files, DokanFileInfo info)
         {
             Console.WriteLine("FindFiles, {0}", fileName);
+
+            // The root consists only of the root folders.
             if (fileName == rootName)
             {
                 files = rootFolders
@@ -61,6 +63,13 @@ namespace IpfsMount
                         LastAccessTime = DateTime.Now
                     })
                     .ToList();
+                return DokanResult.Success;
+            }
+
+            // Can not determine the contents of the root folders.
+            if (rootFolders.Any(name => fileName == (rootName + name)))
+            {
+                files = new FileInformation[0];
                 return DokanResult.Success;
             }
 
@@ -103,12 +112,20 @@ namespace IpfsMount
 
             fileInfo = new FileInformation { FileName = fileName };
 
+            // Root info
             if (fileName == rootName)
             {
                 fileInfo.Attributes = FileAttributes.Directory;
                 fileInfo.LastAccessTime = DateTime.Now;
-                fileInfo.LastWriteTime = null;
-                fileInfo.CreationTime = null;
+
+                return DokanResult.Success;
+            }
+
+            // Root folder info
+            if (rootFolders.Any(name => fileName == (rootName + name)))
+            {
+                fileInfo.Attributes = FileAttributes.Directory;
+                fileInfo.LastAccessTime = DateTime.Now;
 
                 return DokanResult.Success;
             }
