@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Security.AccessControl;
 using Newtonsoft.Json.Linq;
+using System.Security.Principal;
 
 namespace IpfsMount
 {
@@ -20,6 +21,22 @@ namespace IpfsMount
         const string rootName = @"\";
         static string[] rootFolders = { "ipfs", "ipns" };
         static IpfsClient ipfs = new IpfsClient();
+        static FileSecurity readonlyFileSecurity = new FileSecurity();
+        static DirectorySecurity readonlyDirectorySecurity = new DirectorySecurity();
+
+        static IpfsDokan()
+        {
+            var everyone = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+            var everyoneRead = new FileSystemAccessRule(everyone, 
+                FileSystemRights.ReadAndExecute | FileSystemRights.ListDirectory,
+                AccessControlType.Allow);
+            readonlyFileSecurity.AddAccessRule(everyoneRead);
+            readonlyFileSecurity.SetOwner(everyone);
+            readonlyFileSecurity.SetGroup(everyone);
+            readonlyDirectorySecurity.AddAccessRule(everyoneRead);
+            readonlyDirectorySecurity.SetOwner(everyone);
+            readonlyDirectorySecurity.SetGroup(everyone);
+        }
 
         public NtStatus CreateFile(string fileName, DokanNet.FileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, DokanFileInfo info)
         {
@@ -69,6 +86,7 @@ namespace IpfsMount
             }
             catch
             {
+                Console.WriteLine("Not found {0}", fileName);
                 return DokanResult.FileNotFound;
             }
 
@@ -116,9 +134,11 @@ namespace IpfsMount
 
         public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections, DokanFileInfo info)
         {
-            Console.WriteLine("GetFileSecurity");
-            security = null; // TODO
-            return DokanResult.NotImplemented;
+            Console.WriteLine("GetFileSecurity {0}, sections {1}, isdir={2}", fileName, sections, info.IsDirectory);
+            security = info.IsDirectory
+                ? (FileSystemSecurity) readonlyDirectorySecurity
+                : readonlyFileSecurity;
+            return DokanResult.Success;
         }
 
         #region Volumne Operations
@@ -143,7 +163,7 @@ namespace IpfsMount
             features = FileSystemFeatures.ReadOnlyVolume
                 | FileSystemFeatures.CasePreservedNames | FileSystemFeatures.CaseSensitiveSearch 
                 | FileSystemFeatures.PersistentAcls | FileSystemFeatures.SupportsRemoteStorage 
-                | FileSystemFeatures.UnicodeOnDisk;
+                | FileSystemFeatures.UnicodeOnDisk | FileSystemFeatures.SupportsObjectIDs;
             fileSystemName = "ipfs";
             info.IsDirectory = true;
 
