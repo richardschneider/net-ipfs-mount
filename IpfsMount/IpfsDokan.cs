@@ -19,6 +19,7 @@ namespace IpfsMount
     {
         const string rootName = @"\";
         static string[] rootFolders = { "ipfs", "ipns" };
+        static IpfsClient ipfs = new IpfsClient();
 
         public void Cleanup(string fileName, DokanFileInfo info)
         {
@@ -49,7 +50,6 @@ namespace IpfsMount
             var ipfsFileName = fileName.Replace(@"\", "/");
             try
             {
-                var ipfs = new IpfsClient();
                 var x = ipfs.DoCommand("file/ls", ipfsFileName);
                 var r = JObject.Parse(x);
                 var hash = (string) r["Arguments"][ipfsFileName];
@@ -248,7 +248,24 @@ namespace IpfsMount
 
         public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, DokanFileInfo info)
         {
-            Console.WriteLine("ReadFile NYI");
+            Console.WriteLine("ReadFile NYI, buffer size {0}", buffer.Length);
+            var file = (IpfsFile)info.Context;
+
+            // TODO: Not very efficient.  Maybe access the merkle dags.
+            using (var data = ipfs.Download("cat", file.Hash))
+            {
+                // Simulate Seek(offset)
+                while (offset > 0)
+                {
+                    var n = (int)Math.Min(offset, buffer.LongLength);
+                    offset -= data.Read(buffer, 0, n);
+                }
+
+                // Fill the buffer
+                bytesRead = data.Read(buffer, 0, buffer.Length);
+                return DokanResult.Success;
+            }
+
             throw new NotImplementedException();
         }
 
