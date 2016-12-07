@@ -26,7 +26,7 @@ namespace IpfsMount
             Console.WriteLine("CreateFile NYI, {0}, mode {1}, access {2}", fileName, mode, access);
 
             // Read only access.
-            if (mode != FileMode.Open)
+            if (mode != FileMode.Open || (access & DokanNet.FileAccess.WriteData) != 0)
                 return DokanResult.AccessDenied;
 
             // Root and root folders are always present.
@@ -79,12 +79,15 @@ namespace IpfsMount
         {
             Console.WriteLine("GetFileInformation {0}", fileName);
 
-            fileInfo = new FileInformation { FileName = fileName };
+            fileInfo = new FileInformation {
+                FileName = fileName,
+                Attributes = FileAttributes.ReadOnly
+            };
             var file = info.Context as IpfsFile;
             if (file != null)
             {
                 if (file.IsDirectory)
-                    fileInfo.Attributes = FileAttributes.Directory;
+                    fileInfo.Attributes |= FileAttributes.Directory;
                 fileInfo.Length = file.Size;
 
                 return DokanResult.Success;
@@ -93,7 +96,7 @@ namespace IpfsMount
             // Root info
             if (fileName == rootName)
             {
-                fileInfo.Attributes = FileAttributes.Directory;
+                fileInfo.Attributes |= FileAttributes.Directory;
                 fileInfo.LastAccessTime = DateTime.Now;
 
                 return DokanResult.Success;
@@ -102,7 +105,7 @@ namespace IpfsMount
             // Root folder info
             if (rootFolders.Any(name => fileName == (rootName + name)))
             {
-                fileInfo.Attributes = FileAttributes.Directory;
+                fileInfo.Attributes |= FileAttributes.Directory;
                 fileInfo.LastAccessTime = DateTime.Now;
 
                 return DokanResult.Success;
@@ -113,8 +116,9 @@ namespace IpfsMount
 
         public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections, DokanFileInfo info)
         {
-            Console.WriteLine("GetFileSecurity NYI");
-            throw new NotImplementedException();
+            Console.WriteLine("GetFileSecurity");
+            security = null; // TODO
+            return DokanResult.NotImplemented;
         }
 
         #region Volumne Operations
@@ -135,8 +139,11 @@ namespace IpfsMount
             DokanFileInfo info)
         {
             Console.WriteLine("Get volumne info");
-            volumeLabel = "Ipfs";
-            features = FileSystemFeatures.ReadOnlyVolume;
+            volumeLabel = "InterPlanetary";
+            features = FileSystemFeatures.ReadOnlyVolume
+                | FileSystemFeatures.CasePreservedNames | FileSystemFeatures.CaseSensitiveSearch 
+                | FileSystemFeatures.PersistentAcls | FileSystemFeatures.SupportsRemoteStorage 
+                | FileSystemFeatures.UnicodeOnDisk;
             fileSystemName = "ipfs";
             info.IsDirectory = true;
 
@@ -246,9 +253,8 @@ namespace IpfsMount
                     {
                         FileName = link.Name,
                         Length = link.Size,
-                        Attributes = link.IsDirectory
-                            ? FileAttributes.Directory
-                            : FileAttributes.Normal
+                        Attributes = FileAttributes.ReadOnly
+                            | (link.IsDirectory ? FileAttributes.Directory : FileAttributes.Normal)
                     })
                     .ToList();
                 return DokanResult.Success;
@@ -261,7 +267,7 @@ namespace IpfsMount
                     .Select(name => new FileInformation()
                     {
                         FileName = name,
-                        Attributes = FileAttributes.Directory,
+                        Attributes = FileAttributes.Directory | FileAttributes.ReadOnly,
                         LastAccessTime = DateTime.Now
                     })
                     .ToList();
