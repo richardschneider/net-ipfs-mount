@@ -187,7 +187,7 @@ namespace IpfsMount
         #region File Operations
         public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, DokanFileInfo info)
         {
-            Console.WriteLine("ReadFile NYI, buffer size {0}", buffer.Length);
+            Console.WriteLine("ReadFile, buffer size {0}, offset {1}", buffer.Length, offset);
             var file = (IpfsFile)info.Context;
 
             // TODO: Not very efficient.  Maybe access the merkle dags.
@@ -200,13 +200,22 @@ namespace IpfsMount
                     offset -= data.Read(buffer, 0, n);
                 }
 
-                // Fill the buffer
-                bytesRead = data.Read(buffer, 0, buffer.Length);
+                // Fill the entire buffer
+                bytesRead = 0;
+                int bufferOffset = 0;
+                int remainingBytes = buffer.Length;
+                while (remainingBytes > 0)
+                {
+                    int n = data.Read(buffer, bufferOffset, remainingBytes);
+                    if (n < 1)
+                        break;
+                    bufferOffset += n;
+                    remainingBytes -= n;
+                    bytesRead += n;
+                }
                 return DokanResult.Success;
             }
-
-            throw new NotImplementedException();
-        }
+       }
 
         public NtStatus LockFile(string fileName, long offset, long length, DokanFileInfo info)
         {
