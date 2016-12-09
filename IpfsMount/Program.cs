@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DokanNet;
 using Ipfs.Api;
+using NDesk.Options;
 
 namespace IpfsMount
 {
@@ -14,31 +15,54 @@ namespace IpfsMount
     {
         static int Main(string[] args)
         {
+            // Command line parsing
+            bool help = false;
+            bool debugging = false;
+            string ipfsServer = "http://127.0.0.1:5001";
+            var p = new OptionSet() {
+                { "s|server=", "IPFS API server address", v => ipfsServer = v},
+                { "d|debug", "Display debugging information", v => debugging = v != null },
+                { "h|?|help", "Show this help", v => help = v != null },
+            };
+            List<string> extras;
+            try
+            {
+                extras = p.Parse(args);
+            }
+            catch (OptionException e)
+            {
+                return ShowError(e.Message);
+            }
+            if (help)
+                return ShowHelp(p);
+
             // Logging
-            bool debugging = args.Length > 1 && args[1] == "-d";
             NameValueCollection properties = new NameValueCollection();
             properties["level"] = debugging ? "Debug" : "Error";
             properties["showDateTime"] = debugging.ToString();
             LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
             var log = LogManager.GetLogger("ipfs-mount");
 
-            if (args.Length < 1)
-                throw new ArgumentException("Missing the drive letter.");
-
             // Allow colon after drive letter
-            var drive = args[0];
+            if (extras.Count < 1)
+                return ShowError("Missing the drive letter.");
+            var drive = extras[0];
             if (drive.EndsWith(":"))
                 drive = drive.Substring(0, drive.Length - 1);
             drive = drive + @":\";
 
-            // Verify that local IPFS is up and running
+            // Verify that the local IPFS service is up and running
             try
             {
+                IpfsClient.DefaultApiUri = new Uri(ipfsServer);
                 new IpfsClient().Id();
             }
             catch (Exception e)
             {
-                log.Fatal("IPFS is not running", e);
+                if (debugging)
+                    log.Fatal("IPFS is not running", e);
+                else
+                    Console.WriteLine("IPFS is not running at {0}\nTry 'ipfs daemon'.", ipfsServer);
                 return 1;
             }
             
@@ -46,11 +70,35 @@ namespace IpfsMount
             var options = DokanOptions.WriteProtection;
             if (debugging)
                 options |= DokanOptions.DebugMode;
-            Dokan.Mount(new IpfsDokan(), 
-                drive, 
-                options,
-                new DokanLogger());
+            try
+            {
+                Dokan.Mount(new IpfsDokan(),
+                    drive,
+                    options,
+                    new DokanLogger());
+            }
+            catch (Exception e)
+            {
+                return ShowError(e.Message);
+            }
 
+            return 0;
+        }
+
+        static int ShowError(string message)
+        {
+            Console.WriteLine(message);
+            Console.WriteLine("Try 'ipfs-mount --help' for more information.");
+            return 1;
+        }
+
+        static int ShowHelp(OptionSet p)
+        {
+            Console.WriteLine("Mount the IPFS on the specified drive");
+            Console.WriteLine();
+            Console.WriteLine("Usage: ipfs-mount drive [OPTIONS]");
+            Console.WriteLine("Options:");
+            p.WriteOptionDescriptions(Console.Out);
             return 0;
         }
     }
