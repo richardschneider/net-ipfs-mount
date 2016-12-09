@@ -6,13 +6,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DokanNet;
+using Ipfs.Api;
 
 namespace IpfsMount
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
+            // Logging
+            bool debugging = args.Length > 1 && args[1] == "-d";
+            NameValueCollection properties = new NameValueCollection();
+            properties["level"] = debugging ? "Debug" : "Error";
+            properties["showDateTime"] = debugging.ToString();
+            LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
+            var log = LogManager.GetLogger("ipfs-mount");
+
             if (args.Length < 1)
                 throw new ArgumentException("Missing the drive letter.");
 
@@ -22,13 +31,17 @@ namespace IpfsMount
                 drive = drive.Substring(0, drive.Length - 1);
             drive = drive + @":\";
 
-            // Debugging
-            bool debugging = args.Length > 1 && args[1] == "-d";
-            NameValueCollection properties = new NameValueCollection();
-            properties["level"] = debugging ? "Debug" : "Off";
-            properties["showDateTime"] = "true";
-            LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
-
+            // Verify that local IPFS is up and running
+            try
+            {
+                new IpfsClient().Id();
+            }
+            catch (Exception e)
+            {
+                log.Fatal("IPFS is not running", e);
+                return 1;
+            }
+            
             // Mount IPFS, doesn't return until the drive is dismounted
             var options = DokanOptions.WriteProtection;
             if (debugging)
@@ -37,6 +50,8 @@ namespace IpfsMount
                 drive, 
                 options,
                 new DokanLogger());
+
+            return 0;
         }
     }
 
