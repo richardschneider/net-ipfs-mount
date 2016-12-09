@@ -40,8 +40,6 @@ namespace IpfsMount
 
         public NtStatus CreateFile(string fileName, DokanNet.FileAccess access, FileShare share, FileMode mode, FileOptions options, FileAttributes attributes, DokanFileInfo info)
         {
-            Console.WriteLine("CreateFile NYI, {0}, mode {1}, access {2}", fileName, mode, access);
-
             // Read only access.
             if (mode != FileMode.Open || (access & DokanNet.FileAccess.WriteData) != 0)
                 return DokanResult.AccessDenied;
@@ -86,7 +84,6 @@ namespace IpfsMount
             }
             catch
             {
-                Console.WriteLine("Not found {0}", fileName);
                 return DokanResult.FileNotFound;
             }
 
@@ -95,8 +92,6 @@ namespace IpfsMount
 
         public NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info)
         {
-            Console.WriteLine("GetFileInformation {0}", fileName);
-
             fileInfo = new FileInformation {
                 FileName = fileName,
                 Attributes = FileAttributes.ReadOnly
@@ -134,7 +129,6 @@ namespace IpfsMount
 
         public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections, DokanFileInfo info)
         {
-            Console.WriteLine("GetFileSecurity {0}, sections {1}, isdir={2}", fileName, sections, info.IsDirectory);
             security = info.IsDirectory
                 ? (FileSystemSecurity) readonlyDirectorySecurity
                 : readonlyFileSecurity;
@@ -144,7 +138,6 @@ namespace IpfsMount
         #region Volumne Operations
         public NtStatus GetDiskFreeSpace(out long freeBytesAvailable, out long totalNumberOfBytes, out long totalNumberOfFreeBytes, DokanFileInfo info)
         {
-            Console.WriteLine("GetFreeSpace");
             freeBytesAvailable = 0;
             totalNumberOfBytes = 0;
             totalNumberOfFreeBytes = 0;
@@ -158,7 +151,6 @@ namespace IpfsMount
             out string fileSystemName,
             DokanFileInfo info)
         {
-            Console.WriteLine("Get volumne info");
             volumeLabel = "InterPlanetary";
             features = FileSystemFeatures.ReadOnlyVolume
                 | FileSystemFeatures.CasePreservedNames | FileSystemFeatures.CaseSensitiveSearch 
@@ -172,13 +164,11 @@ namespace IpfsMount
 
         public NtStatus Mounted(DokanFileInfo info)
         {
-            Console.WriteLine("Mounted");
             return NtStatus.Success;
         }
 
         public NtStatus Unmounted(DokanFileInfo info)
         {
-            Console.WriteLine("Unmounted NYI");
             return DokanResult.Success;
         }
 
@@ -187,7 +177,6 @@ namespace IpfsMount
         #region File Operations
         public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, DokanFileInfo info)
         {
-            Console.WriteLine("ReadFile, buffer size {0}, offset {1}", buffer.Length, offset);
             var file = (IpfsFile)info.Context;
 
             // TODO: Not very efficient.  Maybe access the merkle dags.
@@ -272,8 +261,6 @@ namespace IpfsMount
         #region Directory Operations
         public NtStatus FindFiles(string fileName, out IList<FileInformation> files, DokanFileInfo info)
         {
-            Console.WriteLine("FindFiles, {0}", fileName);
-
             var file = info.Context as IpfsFile;
             if (file != null)
             {
@@ -316,14 +303,12 @@ namespace IpfsMount
 
         public NtStatus FindFilesWithPattern(string fileName, string searchPattern, out IList<FileInformation> files, DokanFileInfo info)
         {
-            Console.WriteLine("FindFilesWithPattern NYI {0} {1}", fileName, searchPattern);
             files = new FileInformation[0];
             return DokanResult.NotImplemented;
         }
 
         public NtStatus DeleteDirectory(string fileName, DokanFileInfo info)
         {
-            Console.WriteLine("DeleteDirectory NYI");
             return DokanResult.AccessDenied;
         }
 
