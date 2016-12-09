@@ -124,7 +124,7 @@ namespace IpfsMount
                 return DokanResult.Success;
             }
 
-            return DokanResult.NotImplemented;
+            return DokanResult.FileNotFound;
         }
 
         public NtStatus GetFileSecurity(string fileName, out FileSystemSecurity security, AccessControlSections sections, DokanFileInfo info)
@@ -151,12 +151,12 @@ namespace IpfsMount
             out string fileSystemName,
             DokanFileInfo info)
         {
-            volumeLabel = "InterPlanetary";
+            volumeLabel = "Interplanetary";
             features = FileSystemFeatures.ReadOnlyVolume
                 | FileSystemFeatures.CasePreservedNames | FileSystemFeatures.CaseSensitiveSearch 
                 | FileSystemFeatures.PersistentAcls | FileSystemFeatures.SupportsRemoteStorage 
                 | FileSystemFeatures.UnicodeOnDisk | FileSystemFeatures.SupportsObjectIDs;
-            fileSystemName = "ipfs";
+            fileSystemName = "IPFS";
             info.IsDirectory = true;
 
             return NtStatus.Success;
