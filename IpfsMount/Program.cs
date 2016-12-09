@@ -30,9 +30,12 @@ namespace IpfsMount
             LogManager.Adapter = new Common.Logging.Simple.ConsoleOutLoggerFactoryAdapter(properties);
 
             // Mount IPFS, doesn't return until the drive is dismounted
+            var options = DokanOptions.WriteProtection;
+            if (debugging)
+                options |= DokanOptions.DebugMode;
             Dokan.Mount(new IpfsDokan(), 
                 drive, 
-                DokanOptions.WriteProtection | DokanOptions.DebugMode,
+                options,
                 new DokanLogger());
         }
     }
