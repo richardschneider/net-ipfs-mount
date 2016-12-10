@@ -18,9 +18,11 @@ namespace IpfsMount
             // Command line parsing
             bool help = false;
             bool debugging = false;
+            bool unmount = false;
             string ipfsServer = "http://127.0.0.1:5001";
             var p = new OptionSet() {
                 { "s|server=", "IPFS API server address", v => ipfsServer = v},
+                { "u|unmount", "Unmount the drive", v => unmount = v != null },
                 { "d|debug", "Display debugging information", v => debugging = v != null },
                 { "h|?|help", "Show this help", v => help = v != null },
             };
@@ -50,6 +52,20 @@ namespace IpfsMount
             if (drive.EndsWith(":"))
                 drive = drive.Substring(0, drive.Length - 1);
             drive = drive + @":\";
+
+            // Unmount
+            if (unmount)
+            {
+                try
+                {
+                    Dokan.Unmount(drive[0]);
+                    return 0;
+                }
+                catch (Exception e)
+                {
+                    return ShowError(e.Message);
+                }
+            }
 
             // Verify that the local IPFS service is up and running
             try
