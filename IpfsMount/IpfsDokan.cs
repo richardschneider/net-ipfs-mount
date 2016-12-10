@@ -164,12 +164,14 @@ namespace IpfsMount
 
         public NtStatus Mounted(DokanFileInfo info)
         {
+            Console.WriteLine("IPFS mounted");
             return NtStatus.Success;
         }
 
         public NtStatus Unmounted(DokanFileInfo info)
         {
-            return DokanResult.Success;
+            Console.WriteLine("IPFS unmounted");
+            return NtStatus.Success;
         }
 
         #endregion

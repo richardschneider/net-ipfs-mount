@@ -81,7 +81,15 @@ namespace IpfsMount
                     Console.WriteLine("IPFS is not running at {0}\nTry 'ipfs daemon'.", ipfsServer);
                 return 1;
             }
-            
+
+            // CTRL-C will dismount and then exit.
+            Console.CancelKeyPress += (s, e) =>
+            {
+                Console.WriteLine("shutting down...");
+                Dokan.Unmount(drive[0]);
+                e.Cancel = true;
+            };
+
             // Mount IPFS, doesn't return until the drive is dismounted
             var options = DokanOptions.WriteProtection;
             if (debugging)
