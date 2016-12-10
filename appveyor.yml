@@ -1,0 +1,35 @@
+# gitversion will change the version number
+version: x-{build}
+
+# tools we need for bulding/testing/deploying
+install:
+  - choco install gitversion.portable -pre -y
+  - nuget install secure-file -ExcludeVersion
+  - if defined snk_secret secure-file\tools\secure-file -decrypt src\ipfs.ci.snk.enc -secret %snk_secret% -out src\ipfs.dev.snk
+  - choco install ipfs
+  - ipfs init
+  - ps: Start-Process -FilePath "ipfs.exe" -ArgumentList "daemon"
+
+pull_requests:
+  do_not_increment_build_number: true
+
+# gitversion will change the assembly info
+assembly_info:
+  patch: false
+
+before_build:
+  - nuget restore
+  - ps: gitversion /output buildserver /updateAssemblyInfo >gitversion.log
+
+platform: Any CPU
+configuration: Release
+
+build:
+  project: IpfsMount.sln
+  publish_nuget: false
+  verbosity: minimal
+
+after_build:
+  - echo %GitVersion_NuGetVersion%
+  - cmd: nuget pack IpfsMount.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
+  - cmd: appveyor PushArtifact "ipfs-mount.%GitVersion_NuGetVersion%.nupkg"

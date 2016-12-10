@@ -7,6 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpfsMount", "IpfsMount\Ipfs
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{184C17C4-7E6D-4CB3-98A0-7CB6E5BE3F87}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
+		IpfsMount.nuspec = IpfsMount.nuspec
 		README.md = README.md
 	EndProjectSection
 EndProject
