@@ -29,6 +29,11 @@ build:
   publish_nuget: false
   verbosity: minimal
 
+test_script:
+  - Start-Process -FilePath "IpfsMount\bin\Release\ipfs-mount" -ArgumentList "z:"
+  - dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B/S
+  - "IpfsMount\bin\Release\ipfs-mount" z: /unmount
+
 after_build:
   - echo %GitVersion_NuGetVersion%
   - cmd: nuget pack IpfsMount.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
