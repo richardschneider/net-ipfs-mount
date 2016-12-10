@@ -30,9 +30,9 @@ build:
   verbosity: minimal
 
 test_script:
-  - Start-Process -FilePath "IpfsMount\bin\Release\ipfs-mount" -ArgumentList "z:"
+  - ps: Start-Process -FilePath "IpfsMount\bin\Release\ipfs-mount" -ArgumentList "z:"
   - dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B/S
-  - "IpfsMount\bin\Release\ipfs-mount" z: /unmount
+  - .\IpfsMount\bin\Release\ipfs-mount z: /unmount
 
 after_build:
   - echo %GitVersion_NuGetVersion%
