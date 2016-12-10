@@ -4,7 +4,7 @@ version: x-{build}
 environment:
   chocoKey:
     secure: Auc6eQGP6pNj7NMbHMQHNn7F3rTzqwQBDB1PoxDnoyxT819GKaU/Nbe3xEJYmHED
-	
+
 # tools we need for bulding/testing/deploying
 install:
   - choco install gitversion.portable -pre -y
