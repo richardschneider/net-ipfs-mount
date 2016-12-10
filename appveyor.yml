@@ -44,7 +44,7 @@ test_script:
   - cmd: .\IpfsMount\bin\Release\ipfs-mount.exe z /unmount
   - cmd: echo "tests okay"
 
-on-success:
+on_success:
   - echo %GitVersion_NuGetVersion%
   - cmd: nuget pack IpfsMount.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
   - cmd: appveyor PushArtifact "ipfs-mount.%GitVersion_NuGetVersion%.nupkg"
