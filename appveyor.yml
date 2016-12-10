@@ -1,6 +1,10 @@
 # gitversion will change the version number
 version: x-{build}
 
+environment:
+  chocoKey:
+    secure: Auc6eQGP6pNj7NMbHMQHNn7F3rTzqwQBDB1PoxDnoyxT819GKaU/Nbe3xEJYmHED
+	
 # tools we need for bulding/testing/deploying
 install:
   - choco install gitversion.portable -pre -y
@@ -9,9 +13,10 @@ install:
   - choco install ipfs
   - ipfs init
   - ps: Start-Process -FilePath "ipfs.exe" -ArgumentList "daemon"
+  # need windows update server running for dokany
   - ps: Set-Service wuauserv -StartupType Manual
   - ps: Start-Service wuauserv
-  - cmd: choco install dokany && exit 0
+  - cmd: choco install dokany
 
 pull_requests:
   do_not_increment_build_number: true
@@ -39,7 +44,17 @@ test_script:
   - cmd: .\IpfsMount\bin\Release\ipfs-mount.exe z /unmount
   - cmd: echo "tests okay"
 
-after_build:
+on-success:
   - echo %GitVersion_NuGetVersion%
   - cmd: nuget pack IpfsMount.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
   - cmd: appveyor PushArtifact "ipfs-mount.%GitVersion_NuGetVersion%.nupkg"
+
+deploy_script:
+  - ps: >-
+      Write-Host $env:APPVEYOR_REPO_TAG ;
+	  Write-Host $env:GitVersion_NuGetVersion ;
+      if($env:APPVEYOR_REPO_BRANCH -eq 'master' -And $env:APPVEYOR_REPO_TAG -eq 'true') {
+        $version = $env:GitVersion_NuGetVersion ;
+        choco apiKey -k $env:chocoKey -source https://chocolatey.org/ ;
+        choco push ipfs-mount.$version.nupkg
+      }
