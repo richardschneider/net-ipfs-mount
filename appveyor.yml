@@ -9,6 +9,7 @@ install:
   - choco install ipfs
   - ipfs init
   - ps: Start-Process -FilePath "ipfs.exe" -ArgumentList "daemon"
+  - net start wuauserv
   - cmd: choco install dokany && exit 0
 
 pull_requests:
