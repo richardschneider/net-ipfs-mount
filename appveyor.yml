@@ -37,7 +37,7 @@ build:
   publish_nuget: false
   verbosity: minimal
 
-build_success:
+after_build:
   - echo %GitVersion_NuGetVersion%
   - cmd: nuget pack IpfsMount.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
   - cmd: appveyor PushArtifact "ipfs-mount.%GitVersion_NuGetVersion%.nupkg"
