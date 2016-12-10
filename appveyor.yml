@@ -31,6 +31,7 @@ build:
 
 test_script:
   - ps: Start-Process -FilePath "IpfsMount\bin\Release\ipfs-mount" -ArgumentList "z:"
+  - ping 127.0.0.1 -n 5 > nul
   - dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B/S
   - .\IpfsMount\bin\Release\ipfs-mount z: /unmount
 
