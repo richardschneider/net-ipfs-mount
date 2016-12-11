@@ -1,6 +1,8 @@
 # net-ipfs-mount
+[![Build status](https://ci.appveyor.com/api/projects/status/7jdxs33887unrhp0?svg=true)](https://ci.appveyor.com/project/richardschneider/net-ipfs-mount)
+[![Chocolatey](https://img.shields.io/chocolatey/v/ipfs-mount.svg)](https://chocolatey.org/packages/ipfs-mount)
 
-Mount the InterPlanetary File System as a mapped drive on Windows.
+Mount the [InterPlanetary File System](https://ipfs.io/) as a mapped drive on Windows.
 
 ## Installation
 
