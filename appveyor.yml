@@ -39,6 +39,7 @@ build:
 
 after_build:
   - echo %GitVersion_NuGetVersion%
+  - appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
   - cmd: nuget pack IpfsMount.nuspec -version "%GitVersion_NuGetVersion%" -prop "target=%CONFIGURATION%"
   - cmd: appveyor PushArtifact "ipfs-mount.%GitVersion_NuGetVersion%.nupkg"
 
