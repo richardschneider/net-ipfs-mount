@@ -9,8 +9,10 @@
     <bugTrackerUrl>https://github.com/richardschneider/net-ipfs-mount/issues</bugTrackerUrl>
     <licenseUrl>https://github.com/richardschneider/net-ipfs-mount/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/richardschneider/net-ipfs-mount</projectUrl>
+	<packageSourceUrl>https://github.com/richardschneider/net-ipfs-mount</packageSourceUrl>
     <iconUrl>https://raw.githubusercontent.com/ipfs/logo/master/platform-icons/osx-menu-bar%402x.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>Mount the InterPlanetary File System as a mapped drive on Windows</summary>
     <description>
       Mount the InterPlanetary File System as a mapped drive on Windows.
 
