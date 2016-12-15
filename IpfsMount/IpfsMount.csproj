@@ -47,8 +47,8 @@
       <HintPath>..\packages\DokanNet.1.1.0.1\lib\net40\DokanNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ipfs.Api, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ipfs.Api.0.1.1-alpha\lib\net45\Ipfs.Api.dll</HintPath>
+    <Reference Include="Ipfs.Api, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ipfs.Api.0.2.0-beta\lib\net45\Ipfs.Api.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Ipfs.Core, Version=0.3.0.0, Culture=neutral, PublicKeyToken=4589d7354eece1b4, processorArchitecture=MSIL">
@@ -83,6 +83,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
