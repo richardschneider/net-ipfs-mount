@@ -7,18 +7,18 @@
     <authors>Richard Schneider</authors>
     <owners>Richard Schneider</owners>
     <bugTrackerUrl>https://github.com/richardschneider/net-ipfs-mount/issues</bugTrackerUrl>
-    <licenseUrl>https://github.com/richardschneider/net-ipfs-mount/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/richardschneider/net-ipfs-mount/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/richardschneider/net-ipfs-mount</projectUrl>
 	<packageSourceUrl>https://github.com/richardschneider/net-ipfs-mount</packageSourceUrl>
     <iconUrl>https://raw.githubusercontent.com/ipfs/logo/master/platform-icons/osx-menu-bar%402x.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<summary>Mount the InterPlanetary File System as a mapped drive on Windows</summary>
     <description>
-      Mount the InterPlanetary File System as a mapped drive on Windows.
+Mount the InterPlanetary File System as a mapped drive on Windows.
 
-	  See the [README](https://github.com/richardschneider/net-ipfs-mount) for details.
+See the [README](https://github.com/richardschneider/net-ipfs-mount) for details.
 
-	  ## Quick start
+## Quick start
 
     > ipfs-mount z 
     > dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B/S
@@ -35,7 +35,7 @@ z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f
     </description>
     <copyright>© 2016 Richard Schneider</copyright>
     <tags>ipfs peer-to-peer distributed file-system</tags>
-    <releaseNotes>View the [change-log](https://github.com/richardschneider/net-ipfs-mount/releases).</releaseNotes>
+    <releaseNotes>View the [change log](https://github.com/richardschneider/net-ipfs-mount/releases).</releaseNotes>
     <dependencies>
       <dependency id="ipfs" version="0.4.4" />
       <dependency id="dokany" version="1.0.1.1000" />
