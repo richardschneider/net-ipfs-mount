@@ -13,6 +13,23 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
       Mount the InterPlanetary File System as a mapped drive on Windows.
+
+	  See the [README](https://github.com/richardschneider/net-ipfs-mount) for details.
+
+	  ## Quick start
+
+    > ipfs-mount z 
+    > dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B/S
+
+````
+z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg
+z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test
+z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\bar
+z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz
+z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\foo
+z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\b
+z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f
+````
     </description>
     <copyright>© 2016 Richard Schneider</copyright>
     <tags>ipfs peer-to-peer distributed file-system</tags>
