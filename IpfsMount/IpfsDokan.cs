@@ -11,7 +11,7 @@ using System.Security.AccessControl;
 using Newtonsoft.Json.Linq;
 using System.Security.Principal;
 
-namespace IpfsMount
+namespace Ipfs.VirtualDisk
 {
     /// <summary>
     ///   Maps Dokan opeations into IPFS.

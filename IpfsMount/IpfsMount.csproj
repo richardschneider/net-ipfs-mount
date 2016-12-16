@@ -7,7 +7,7 @@
     <ProjectGuid>{9A619FCC-F84B-4F8E-AC05-AABC4BDD88E4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IpfsMount</RootNamespace>
+    <RootNamespace>Ipfs.VirtualDisk</RootNamespace>
     <AssemblyName>ipfs-mount</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -77,6 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DokanLogger.cs" />
     <Compile Include="IpfsDokan.cs" />
     <Compile Include="IpfsFile.cs" />
     <Compile Include="Program.cs" />
