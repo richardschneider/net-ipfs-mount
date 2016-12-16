@@ -19,9 +19,9 @@ namespace IpfsMount
             bool help = false;
             bool debugging = false;
             bool unmount = false;
-            string ipfsServer = "http://127.0.0.1:5001";
+            string apiUrl = "http://127.0.0.1:5001";
             var p = new OptionSet() {
-                { "s|server=", "IPFS API server address", v => ipfsServer = v},
+                { "s|server=", "IPFS API server address", v => apiUrl = v},
                 { "u|unmount", "Unmount the drive", v => unmount = v != null },
                 { "d|debug", "Display debugging information", v => debugging = v != null },
                 { "h|?|help", "Show this help", v => help = v != null },
@@ -48,62 +48,29 @@ namespace IpfsMount
             // Allow colon after drive letter
             if (extras.Count < 1)
                 return ShowError("Missing the drive letter.");
+            else if (extras.Count > 1)
+                return ShowError("Unknown option");
+
             var drive = extras[0];
             if (drive.EndsWith(":"))
                 drive = drive.Substring(0, drive.Length - 1);
             drive = drive + @":\";
 
-            // Unmount
-            if (unmount)
-            {
-                try
-                {
-                    Dokan.Unmount(drive[0]);
-                    return 0;
-                }
-                catch (Exception e)
-                {
-                    return ShowError(e.Message);
-                }
-            }
-
-            // Verify that the local IPFS service is up and running
+            // Do the command
+            var program = new Runner();
             try
             {
-                IpfsClient.DefaultApiUri = new Uri(ipfsServer);
-                new IpfsClient().Id();
+                if (unmount)
+                    program.Unmount(drive);
+                else
+                    program.Mount(drive, apiUrl, debugging);
             }
             catch (Exception e)
             {
                 if (debugging)
-                    log.Fatal("IPFS is not running", e);
-                else
-                    Console.WriteLine("IPFS is not running at {0}\nTry 'ipfs daemon'.", ipfsServer);
-                return 1;
-            }
-
-            // CTRL-C will dismount and then exit.
-            Console.CancelKeyPress += (s, e) =>
-            {
-                Console.WriteLine("shutting down...");
-                Dokan.Unmount(drive[0]);
-                e.Cancel = true;
-            };
-
-            // Mount IPFS, doesn't return until the drive is dismounted
-            var options = DokanOptions.WriteProtection;
-            if (debugging)
-                options |= DokanOptions.DebugMode;
-            try
-            {
-                Dokan.Mount(new IpfsDokan(),
-                    drive,
-                    options,
-                    new DokanLogger());
-            }
-            catch (Exception e)
-            {
-                return ShowError(e.Message);
+                    log.Fatal("Failed", e);
+                
+                return ShowError(e);
             }
 
             return 0;
@@ -116,6 +83,16 @@ namespace IpfsMount
             return 1;
         }
 
+        static int ShowError(Exception ex)
+        {
+            for (var e = ex; e != null; e = e.InnerException)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return 1;
+        }
+
         static int ShowHelp(OptionSet p)
         {
             Console.WriteLine("Mount the IPFS on the specified drive");
@@ -124,6 +101,35 @@ namespace IpfsMount
             Console.WriteLine("Options:");
             p.WriteOptionDescriptions(Console.Out);
             return 0;
+        }
+    }
+
+    class Runner
+    {
+        public void Mount(string drive, string apiUrl, bool debugging)
+        {
+            // Verify that the local IPFS service is up and running
+            IpfsClient.DefaultApiUri = new Uri(apiUrl);
+            var x = new IpfsClient().Id().Result;
+
+            // CTRL-C will dismount and then exit.
+            Console.CancelKeyPress += (s, e) =>
+            {
+                Console.WriteLine("shutting down...");
+                Unmount(drive);
+                e.Cancel = true;
+            };
+
+            // Mount IPFS, doesn't return until the drive is dismounted
+            var options = DokanOptions.WriteProtection;
+            if (debugging)
+                options |= DokanOptions.DebugMode;
+            Dokan.Mount(new IpfsDokan(), drive, options, new DokanLogger());
+        }
+
+        public void Unmount(string drive)
+        {
+            Dokan.Unmount(drive[0]);
         }
     }
 
