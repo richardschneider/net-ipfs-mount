@@ -16,15 +16,15 @@ namespace Ipfs.VirtualDisk.Tests
         [TestMethod]
         public void Exists()
         {
-            Assert.IsTrue(File.Exists("z:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/cat.jpg"));
-            Assert.IsTrue(File.Exists("z:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/test/baz/f"));
-            Assert.IsFalse(File.Exists("z:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/test/baz/g"));
+            Assert.IsTrue(File.Exists("t:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/cat.jpg"));
+            Assert.IsTrue(File.Exists("t:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/test/baz/f"));
+            Assert.IsFalse(File.Exists("t:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/test/baz/g"));
         }
 
         [TestMethod]
         public void File_Info()
         {
-            var info = new FileInfo("z:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/cat.jpg");
+            var info = new FileInfo("t:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF/cat.jpg");
 
             Assert.IsTrue(info.Exists);
             Assert.IsTrue(info.IsReadOnly);
@@ -34,14 +34,14 @@ namespace Ipfs.VirtualDisk.Tests
         [TestMethod]
         public void Can_Read_File()
         {
-            var s = File.ReadAllText(@"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f");
+            var s = File.ReadAllText(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f");
             Assert.AreEqual("foo\n", s);
         }
 
         [TestMethod]
         public void Can_Read_Big_File()
         {
-            var content = File.ReadAllBytes(@"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
+            var content = File.ReadAllBytes(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
             Assert.AreEqual(139781, content.Length);
             Assert.AreEqual(255, content[0]);
             Assert.AreEqual(217, content[139780]);
@@ -51,21 +51,21 @@ namespace Ipfs.VirtualDisk.Tests
         [ExpectedException(typeof(IOException))]
         public void Cannot_Create_File()
         {
-            File.Create(@"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\bad.file");
+            File.Create(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\bad.file");
         }
 
         [TestMethod]
         [ExpectedException(typeof(IOException))]
         public void Cannot_Delete_File()
         {
-            File.Create(@"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
+            File.Create(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
         }
 
         [TestMethod]
         [ExpectedException(typeof(IOException))]
         public void Cannot_Update_File()
         {
-            File.OpenWrite(@"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
+            File.OpenWrite(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
         }
     }
 }

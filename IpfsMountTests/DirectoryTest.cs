@@ -16,14 +16,13 @@ namespace Ipfs.VirtualDisk.Tests
         [TestMethod]
         public void Exists()
         {
-            Assert.IsTrue(Directory.Exists("z:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF"));
-            Assert.IsFalse(Directory.Exists("z:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqG"));
+            Assert.IsTrue(Directory.Exists("t:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF"));
         }
 
         [TestMethod]
         public void Directory_Info()
         {
-            var info = new DirectoryInfo("z:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF");
+            var info = new DirectoryInfo("t:/ipfs/QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF");
 
             Assert.IsTrue(info.Exists);
             Assert.AreEqual(2, info.GetFileSystemInfos("*.*").Length);
@@ -32,10 +31,10 @@ namespace Ipfs.VirtualDisk.Tests
         [TestMethod]
         public void All_Files_and_Directories()
         {
-            var names = Directory.GetFileSystemEntries(@"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF", "*.*", SearchOption.AllDirectories);
+            var names = Directory.GetFileSystemEntries(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF", "*.*", SearchOption.AllDirectories);
             Assert.AreEqual(7, names.Count());
-            CollectionAssert.Contains(names, @"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
-            CollectionAssert.Contains(names, @"z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f");
+            CollectionAssert.Contains(names, @"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
+            CollectionAssert.Contains(names, @"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f");
         }
 
     }

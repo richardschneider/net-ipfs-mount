@@ -108,8 +108,10 @@ namespace Ipfs.VirtualDisk
     {
         public void Mount(string drive, string apiUrl, bool debugging)
         {
+            if (apiUrl != null && apiUrl.Length > 0)
+                IpfsClient.DefaultApiUri = new Uri(apiUrl);
+
             // Verify that the local IPFS service is up and running
-            IpfsClient.DefaultApiUri = new Uri(apiUrl);
             var x = new IpfsClient().Id().Result;
 
             // CTRL-C will dismount and then exit.
