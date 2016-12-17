@@ -42,13 +42,6 @@ after_build:
   - cmd: choco pack IpfsMount.nuspec -version "%GitVersion_NuGetVersion%" 
   - cmd: appveyor PushArtifact "ipfs-mount.%GitVersion_NuGetVersion%.nupkg"
 
-test_script:
-  - ps: Start-Process -FilePath "IpfsMount\bin\Release\ipfs-mount" -ArgumentList "z:"
-  - ping 127.0.0.1 -n 5 > nul
-  - dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B /S
-  - cmd: .\IpfsMount\bin\Release\ipfs-mount.exe z /unmount
-  - cmd: echo "tests okay"
-
 deploy_script:
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -eq 'master' -And $env:APPVEYOR_REPO_TAG -eq 'true') {
