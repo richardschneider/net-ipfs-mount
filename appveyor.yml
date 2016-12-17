@@ -3,7 +3,7 @@ version: x-{build}
 
 environment:
   COVERALLS_REPO_TOKEN:
-    secure: SfpTkHnbxXX3F54lOrfSkCbwzdQED+Ki/mjL7+2NNPfMgIFC/a4RHDgOtNX+1pWs
+    secure: JSfpTkHnbxXX3F54lOrfSkCbwzdQED+Ki/mjL7+2NNPfMgIFC/a4RHDgOtNX+1pW
   chocoKey:
     secure: Auc6eQGP6pNj7NMbHMQHNn7F3rTzqwQBDB1PoxDnoyxT819GKaU/Nbe3xEJYmHED
 
