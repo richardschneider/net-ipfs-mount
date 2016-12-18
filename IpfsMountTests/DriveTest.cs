@@ -23,6 +23,16 @@ namespace Ipfs.VirtualDisk.Tests
         }
 
         [TestMethod]
+        public void Drive_Letter_is_Case_Insensitive()
+        {
+            var info = new DriveInfo("T");
+
+            Assert.IsTrue(info.IsReady);
+            Assert.AreEqual("IPFS", info.DriveFormat);
+            Assert.AreEqual("Interplanetary", info.VolumeLabel);
+        }
+
+        [TestMethod]
         public void Root_Exists()
         {
             var info = new DriveInfo("t").RootDirectory;
