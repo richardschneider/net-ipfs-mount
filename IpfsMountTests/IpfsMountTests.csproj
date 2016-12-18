@@ -51,6 +51,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="IpnsDirectoryTest.cs" />
+    <Compile Include="IpfsDirectoryTest.cs" />
     <Compile Include="FileTest.cs" />
     <Compile Include="DirectoryTest.cs" />
     <Compile Include="DriveTest.cs" />
