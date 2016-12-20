@@ -10,6 +10,7 @@ Mount the [InterPlanetary File System](https://ipfs.io/) as a mapped drive on Wi
 - Mounts IPFS and IPNS on a drive letter, `ipfs-mount z:`
 - Unmounts the drive, `ipfs-mount z: /u`
 - [Pinned files](https://github.com/ipfs/examples/blob/master/examples/pinning/readme.md) are available in `z:\ipfs`
+- Root contains shortcut to the IPFS WebUI
 
 ## Installation
 

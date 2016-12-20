@@ -51,6 +51,14 @@ namespace Ipfs.VirtualDisk
                 return DokanResult.Success;
             }
 
+            // Predefined files
+            PredefinedFile predefinedFile = null;
+            if (PredefinedFile.All.TryGetValue(fileName, out predefinedFile))
+            {
+                info.Context = predefinedFile;
+                return DokanResult.Success;
+            }
+
             // Get file info from IPFS
             var ipfsFileName = fileName.Replace(@"\", "/");
             try
@@ -109,6 +117,13 @@ namespace Ipfs.VirtualDisk
                     fileInfo.Attributes |= FileAttributes.Directory;
                 fileInfo.Length = file.Size;
 
+                return DokanResult.Success;
+            }
+
+            var predefinedFile = info.Context as PredefinedFile;
+            if (predefinedFile != null)
+            {
+                fileInfo.Length = predefinedFile.Data.Length;
                 return DokanResult.Success;
             }
 
@@ -185,6 +200,15 @@ namespace Ipfs.VirtualDisk
         #region File Operations
         public NtStatus ReadFile(string fileName, byte[] buffer, out int bytesRead, long offset, DokanFileInfo info)
         {
+            var predefinedFile = info.Context as PredefinedFile;
+            if (predefinedFile != null)
+            {
+                bytesRead = (int) Math.Min(buffer.LongLength, predefinedFile.Data.LongLength - offset);
+                Buffer.BlockCopy(predefinedFile.Data, (int)offset, buffer, 0, bytesRead);
+                return DokanResult.Success;
+            }
+
+
             var file = (IpfsFile)info.Context;
 
             // TODO: Not very efficient.  Maybe access the merkle dags.
@@ -301,17 +325,26 @@ namespace Ipfs.VirtualDisk
                 return DokanResult.Success;
             }
 
-            // The root consists only of the root folders.
+            // The root consists of the root folders and the predefined files.
             if (fileName == rootName)
             {
                 files = rootFolders
-                    .Select(name => new FileInformation()
+                    .Select(name => new FileInformation
                     {
                         FileName = name,
                         Attributes = FileAttributes.Directory | FileAttributes.ReadOnly,
                         LastAccessTime = DateTime.Now
                     })
                     .ToList();
+                foreach (var predefinedFile in PredefinedFile.All.Values)
+                {
+                    files.Add(new FileInformation
+                    {
+                        FileName = Path.GetFileName(predefinedFile.Name),
+                        Attributes = FileAttributes.ReadOnly,
+                        Length = predefinedFile.Data.Length
+                    });
+                }
                 return DokanResult.Success;
             }
 

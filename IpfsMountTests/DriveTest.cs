@@ -62,5 +62,14 @@ namespace Ipfs.VirtualDisk.Tests
             Assert.AreEqual(2, folders.Count());
         }
 
+        [TestMethod]
+        public void Root_has_Shortcut_to_WebUI()
+        {
+            const string shortcut = @"t:\Manage IPFS.url";
+            Assert.IsTrue(File.Exists(shortcut));
+            var lines = File.ReadAllLines(shortcut);
+            Assert.AreEqual("[InternetShortcut]", lines[0]);
+        }
+
     }
 }
