@@ -55,30 +55,7 @@ namespace Ipfs.VirtualDisk
             var ipfsFileName = fileName.Replace(@"\", "/");
             try
             {
-                var x = ipfs.DoCommand("file/ls", ipfsFileName);
-                var r = JObject.Parse(x);
-                var hash = (string) r["Arguments"][ipfsFileName];
-                var o = (JObject) r["Objects"][hash];
-                var file = new IpfsFile()
-                {
-                    Hash = (string)o["Hash"],
-                    Size = (long)o["Size"],
-                    IsDirectory = (string)o["Type"] == "Directory",
-                    Links = new List<IpfsFileLink>(0)
-                };
-                var links = o["Links"] as JArray;
-                if (links != null)
-                {
-                    file.Links = links
-                        .Select(l => new IpfsFileLink()
-                        {
-                            Name = (string)l["Name"],
-                            Hash = (string)l["Hash"],
-                            Size = (long)l["Size"],
-                            IsDirectory = (string)l["Type"] == "Directory",
-                        })
-                        .ToList();
-                }
+                var file = GetIpfsFile(ipfsFileName);
                 info.Context = file;
                 info.IsDirectory = file.IsDirectory;
             }
@@ -90,6 +67,35 @@ namespace Ipfs.VirtualDisk
             return DokanResult.Success;
         }
 
+        IpfsFile GetIpfsFile(string name)
+        {
+            var x = ipfs.DoCommand("file/ls", name);
+            var r = JObject.Parse(x);
+            var hash = (string)r["Arguments"][name];
+            var o = (JObject)r["Objects"][hash];
+            var file = new IpfsFile()
+            {
+                Hash = (string)o["Hash"],
+                Size = (long)o["Size"],
+                IsDirectory = (string)o["Type"] == "Directory",
+                Links = new List<IpfsFileLink>(0)
+            };
+            var links = o["Links"] as JArray;
+            if (links != null)
+            {
+                file.Links = links
+                    .Select(l => new IpfsFileLink()
+                    {
+                        Name = (string)l["Name"],
+                        Hash = (string)l["Hash"],
+                        Size = (long)l["Size"],
+                        IsDirectory = (string)l["Type"] == "Directory",
+                    })
+                    .ToList();
+            }
+
+            return file;
+        }
         public NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info)
         {
             fileInfo = new FileInformation {
@@ -278,6 +284,23 @@ namespace Ipfs.VirtualDisk
                 return DokanResult.Success;
             }
 
+            // '/ipfs' contains the pinned files.
+            if (fileName == @"\ipfs")
+            {
+                files = ipfs
+                    .PinnedObjects
+                    .Select(pin => GetIpfsFile(pin.Id))
+                    .Select(pinnedFile => new FileInformation
+                    {
+                        FileName = pinnedFile.Hash,
+                        Length = pinnedFile.Size,
+                        Attributes = FileAttributes.ReadOnly
+                            | (pinnedFile.IsDirectory ? FileAttributes.Directory : FileAttributes.Normal)
+                    })
+                    .ToList();
+                return DokanResult.Success;
+            }
+
             // The root consists only of the root folders.
             if (fileName == rootName)
             {
@@ -300,7 +323,7 @@ namespace Ipfs.VirtualDisk
             }
 
             files = new FileInformation[0];
-            return DokanResult.NotImplemented;
+            return DokanResult.Success;
         }
 
         public NtStatus FindFilesWithPattern(string fileName, string searchPattern, out IList<FileInformation> files, DokanFileInfo info)

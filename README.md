@@ -5,6 +5,12 @@
 
 Mount the [InterPlanetary File System](https://ipfs.io/) as a mapped drive on Windows.
 
+## Features
+
+- Mounts IPFS and IPNS on a drive letter, `ipfs-mount z:`
+- Unmounts the drive, `ipfs-mount z: /u`
+- [Pinned files](https://github.com/ipfs/examples/blob/master/examples/pinning/readme.md) are available in `z:\ipfs`
+
 ## Installation
 
 [IPFS](https://ipfs.io/) and [Dokany](https://dokan-dev.github.io/) are required.  If not already installed, they can be installed with [choco](https://chocolatey.org/). 

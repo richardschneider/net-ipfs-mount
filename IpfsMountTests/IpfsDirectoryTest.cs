@@ -20,12 +20,12 @@ namespace Ipfs.VirtualDisk.Tests
         }
 
         [TestMethod]
-        public void Has_No_Files()
+        public void Has_Pinned_Files()
         {
             var info = new DirectoryInfo("t:/ipfs");
 
             Assert.IsTrue(info.Exists);
-            Assert.AreEqual(0, info.GetFileSystemInfos("*.*").Length);
+            Assert.AreNotEqual(0, info.GetFileSystemInfos("*.*").Length);
         }
 
     }
