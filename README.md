@@ -51,4 +51,9 @@ Options:
   -h, -?, --help             Show this help
 ````
     
+## Example
+
+A screen shot of Windows explorer displaying the contents of `z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF`
+
+![Explorer](explorer.jpeg)
 
