@@ -112,7 +112,7 @@ namespace Ipfs.VirtualDisk
                 IpfsClient.DefaultApiUri = new Uri(apiUrl);
 
             // Verify that the local IPFS service is up and running
-            var x = new IpfsClient().Id().Result;
+            var x = new IpfsClient().IdAsync().Result;
 
             // CTRL-C will dismount and then exit.
             Console.CancelKeyPress += (s, e) =>

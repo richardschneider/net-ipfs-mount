@@ -1,5 +1,6 @@
 ﻿using DokanNet;
 using Ipfs.Api;
+using IpfsFile = Ipfs.Api.FileSystemNode;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -77,32 +78,7 @@ namespace Ipfs.VirtualDisk
 
         IpfsFile GetIpfsFile(string name)
         {
-            var x = ipfs.DoCommand("file/ls", name);
-            var r = JObject.Parse(x);
-            var hash = (string)r["Arguments"][name];
-            var o = (JObject)r["Objects"][hash];
-            var file = new IpfsFile()
-            {
-                Hash = (string)o["Hash"],
-                Size = (long)o["Size"],
-                IsDirectory = (string)o["Type"] == "Directory",
-                Links = new List<IpfsFileLink>(0)
-            };
-            var links = o["Links"] as JArray;
-            if (links != null)
-            {
-                file.Links = links
-                    .Select(l => new IpfsFileLink()
-                    {
-                        Name = (string)l["Name"],
-                        Hash = (string)l["Hash"],
-                        Size = (long)l["Size"],
-                        IsDirectory = (string)l["Type"] == "Directory",
-                    })
-                    .ToList();
-            }
-
-            return file;
+            return ipfs.FileSystem.ListFileAsync(name).Result;
         }
         public NtStatus GetFileInformation(string fileName, out FileInformation fileInfo, DokanFileInfo info)
         {
@@ -212,7 +188,7 @@ namespace Ipfs.VirtualDisk
             var file = (IpfsFile)info.Context;
 
             // TODO: Not very efficient.  Maybe access the merkle dags.
-            using (var data = ipfs.Download("cat", file.Hash))
+            using (var data = ipfs.FileSystem.ReadFileAsync(file.Hash).Result)
             {
                 // Simulate Seek(offset)
                 while (offset > 0)
