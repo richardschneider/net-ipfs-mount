@@ -289,10 +289,10 @@ namespace Ipfs.VirtualDisk
             {
                 files = ipfs
                     .PinnedObjects
-                    .Select(pin => GetIpfsFile(pin.Id))
+                    .Select(pin => GetIpfsFile(pin.Id.ToBase58()))
                     .Select(pinnedFile => new FileInformation
                     {
-                        FileName = pinnedFile.Hash,
+                        FileName = pinnedFile.Hash.ToBase58(),
                         Length = pinnedFile.Size,
                         Attributes = FileAttributes.ReadOnly
                             | (pinnedFile.IsDirectory ? FileAttributes.Directory : FileAttributes.Normal)
