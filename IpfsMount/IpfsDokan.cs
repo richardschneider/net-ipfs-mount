@@ -1,6 +1,6 @@
 ﻿using DokanNet;
 using Ipfs.Api;
-using IpfsFile = Ipfs.Api.FileSystemNode;
+using IpfsFile = Ipfs.IFileSystemNode;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -188,7 +188,7 @@ namespace Ipfs.VirtualDisk
             var file = (IpfsFile)info.Context;
 
             // TODO: Not very efficient.  Maybe access the merkle dags.
-            using (var data = ipfs.FileSystem.ReadFileAsync(file.Hash).Result)
+            using (var data = ipfs.FileSystem.ReadFileAsync(file.Id).Result)
             {
                 // Simulate Seek(offset)
                 while (offset > 0)
@@ -287,12 +287,23 @@ namespace Ipfs.VirtualDisk
             // '/ipfs' contains the pinned files.
             if (fileName == @"\ipfs")
             {
-                files = ipfs
-                    .PinnedObjects
-                    .Select(pin => GetIpfsFile(pin.Id.ToBase58()))
+                var cids = ipfs.Pin.ListAsync().Result;
+                files = cids
+                    .Select(cid =>
+                    {
+                        try
+                        {
+                            return GetIpfsFile(cid);
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+                    })
+                    .Where(f => f != null)
                     .Select(pinnedFile => new FileInformation
                     {
-                        FileName = pinnedFile.Hash.ToBase58(),
+                        FileName = pinnedFile.Id,
                         Length = pinnedFile.Size,
                         Attributes = FileAttributes.ReadOnly
                             | (pinnedFile.IsDirectory ? FileAttributes.Directory : FileAttributes.Normal)
@@ -346,9 +357,9 @@ namespace Ipfs.VirtualDisk
             return DokanResult.AccessDenied;
         }
 
-        #endregion
+#endregion
 
-        #region Misc Operations
+#region Misc Operations
         public void Cleanup(string fileName, DokanFileInfo info)
         {
             // Nothing to do.
@@ -369,7 +380,7 @@ namespace Ipfs.VirtualDisk
         {
             return DokanResult.Success;
         }
-        #endregion
+#endregion
 
     }
 }
