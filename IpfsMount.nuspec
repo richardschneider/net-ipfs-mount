@@ -21,7 +21,7 @@ See the [README](https://github.com/richardschneider/net-ipfs-mount) for details
 ## Quick start
 
     > ipfs-mount z 
-    > dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B/S
+    > dir z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF /B/S 
 
 ````
 z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg
