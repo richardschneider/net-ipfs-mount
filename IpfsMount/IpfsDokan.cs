@@ -189,16 +189,8 @@ namespace Ipfs.VirtualDisk
 
             var file = (IpfsFile)info.Context;
 
-            // TODO: Not very efficient.  Maybe access the merkle dags.
-            using (var data = ipfs.FileSystem.ReadFileAsync(file.Id).Result)
+            using (var data = ipfs.FileSystem.ReadFileAsync(file.Id, offset, buffer.LongLength).Result)
             {
-                // Simulate Seek(offset)
-                while (offset > 0)
-                {
-                    var n = (int)Math.Min(offset, buffer.LongLength);
-                    offset -= data.Read(buffer, 0, n);
-                }
-
                 // Fill the entire buffer
                 bytesRead = 0;
                 int bufferOffset = 0;
