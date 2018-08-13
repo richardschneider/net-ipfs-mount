@@ -143,9 +143,10 @@ namespace Ipfs.VirtualDisk
         }
 
         public NtStatus GetVolumeInformation(
-            out string volumeLabel,
-            out FileSystemFeatures features,
-            out string fileSystemName,
+            out string volumeLabel, 
+            out FileSystemFeatures features, 
+            out string fileSystemName, 
+            out uint maximumComponentLength,
             DokanFileInfo info)
         {
             volumeLabel = "Interplanetary";
@@ -155,6 +156,7 @@ namespace Ipfs.VirtualDisk
                 | FileSystemFeatures.UnicodeOnDisk | FileSystemFeatures.SupportsObjectIDs;
             fileSystemName = "IPFS";
             info.IsDirectory = true;
+            maximumComponentLength = 255;
 
             return NtStatus.Success;
         }
@@ -380,7 +382,8 @@ namespace Ipfs.VirtualDisk
         {
             return DokanResult.Success;
         }
-#endregion
+
+        #endregion
 
     }
 }
