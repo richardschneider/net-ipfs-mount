@@ -65,7 +65,10 @@ namespace Ipfs.VirtualDisk.Tests
         [ExpectedException(typeof(IOException))]
         public void Cannot_Update_File()
         {
-            File.OpenWrite(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg");
+            using (var stream = File.OpenWrite(@"t:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\cat.jpg"))
+            {
+                stream.Write(new byte[] { 1, 2 }, 0, 2);
+            }
         }
     }
 }
