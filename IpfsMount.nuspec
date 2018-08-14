@@ -33,12 +33,12 @@ z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\b
 z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f
 ````
     </description>
-    <copyright>© 2016 Richard Schneider</copyright>
+    <copyright>© 2016-2018 Richard Schneider</copyright>
     <tags>ipfs peer-to-peer distributed file-system</tags>
     <releaseNotes>View the [change log](https://github.com/richardschneider/net-ipfs-mount/releases).</releaseNotes>
     <dependencies>
-      <dependency id="ipfs" version="0.4.4" />
-      <dependency id="dokany" version="1.0.1.1000" />
+      <dependency id="go-ipfs" version="0.4.17" />
+      <dependency id="dokany" version="1.1.0.2000" />
     </dependencies>
   </metadata>
   <files>
