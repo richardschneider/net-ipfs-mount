@@ -59,6 +59,5 @@ deploy_script:
   - ps: >-
       if($env:APPVEYOR_REPO_BRANCH -eq 'master' -And $env:APPVEYOR_REPO_TAG -eq 'true') {
         $version = $env:GitVersion_NuGetVersion ;
-        choco apiKey -k $env:chocoKey -source https:///push.chocolatey.org/ ;
-        choco push ipfs-mount.$version.nupkg
+        choco push ipfs-mount.$version.nupkg -k $env:chocoKey
       }
