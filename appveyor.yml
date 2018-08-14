@@ -33,6 +33,7 @@ before_build:
 
 platform: Any CPU
 configuration: Release
+os: Visual Studio 2017
 
 build:
   project: IpfsMount.sln
