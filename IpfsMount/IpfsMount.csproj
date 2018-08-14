@@ -54,8 +54,8 @@
     <Reference Include="Google.Protobuf, Version=3.6.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Protobuf.3.6.0\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
-    <Reference Include="Ipfs.Api, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ipfs.Api.0.22.0\lib\net45\Ipfs.Api.dll</HintPath>
+    <Reference Include="Ipfs.Api, Version=0.22.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ipfs.Api.0.22.1\lib\net45\Ipfs.Api.dll</HintPath>
     </Reference>
     <Reference Include="Ipfs.Core, Version=0.29.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Ipfs.Core.0.29.1\lib\net45\Ipfs.Core.dll</HintPath>
