@@ -12,7 +12,7 @@ install:
   - choco install gitversion.portable -pre -y
   - nuget install secure-file -ExcludeVersion
   - if defined snk_secret secure-file\tools\secure-file -decrypt src\ipfs.ci.snk.enc -secret %snk_secret% -out src\ipfs.dev.snk
-  - choco install ipfs
+  - choco install go-ipfs
   - ipfs init
   - ps: Start-Process -FilePath "ipfs.exe" -ArgumentList "daemon"
   # need windows update server running for dokany
