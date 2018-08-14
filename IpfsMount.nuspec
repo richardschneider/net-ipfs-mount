@@ -45,5 +45,6 @@ z:\ipfs\QmRCJXG7HSmprrYwDrK1GctXHgbV7EYpVcJPQPwevoQuqF\test\baz\f
     <file src="IpfsMount\bin\release\ipfs-mount.exe" target="" />
 	<file src="LICENSE.txt" target="" />
     <file src="README.md" target="" />
+	<file src="VERIFICATION.txt" target="" />
   </files>
 </package>

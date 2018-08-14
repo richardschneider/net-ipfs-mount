@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpfsMount", "IpfsMount\IpfsMount.csproj", "{9A619FCC-F84B-4F8E-AC05-AABC4BDD88E4}"
 EndProject
@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		IpfsMount.nuspec = IpfsMount.nuspec
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
+		VERIFICATION.txt = VERIFICATION.txt
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpfsMountTests", "IpfsMountTests\IpfsMountTests.csproj", "{07643E1D-1116-43E7-A5F5-A6BF6DD785A7}"
@@ -33,5 +34,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6CB55BA6-85ED-4F93-8376-A61168FD6C33}
 	EndGlobalSection
 EndGlobal
