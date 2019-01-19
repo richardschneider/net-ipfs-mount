@@ -57,3 +57,9 @@ A screen shot of Windows explorer displaying the contents of `z:\ipfs\QmRCJXG7HS
 
 ![Explorer](explorer.jpeg)
 
+# License
+Copyright © Richard Schneider (makaretu@gmail.com)
+
+The library is licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refere to the [LICENSE](https://github.com/richardschneider/net-ipfs-mount/blob/master/LICENSE.txt) file for more information.
+
+<a href="https://www.buymeacoffee.com/kmXOxKJ4E" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
